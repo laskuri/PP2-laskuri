@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PP2 laskuri</title>
+
+<style>
+:root{
+    --bg:#ffffff;
+    --text:#222222;
+    --panel:#f4f4f4;
+    --table-header:#eaeaea;
+    --table-even:#fafafa;
+    --border:#cccccc;
+    --input-bg:#ffffff;
+    --button-bg:#eaeaea;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    font-size:18px;
+    max-width:1400px;
+    margin:auto;
+    padding:20px;
+    background:var(--bg);
+    color:var(--text);
+    transition:background .25s,color .25s;
+}
+
+body.dark{
+    --bg:#121212;
+    --text:#e0e0e0;
+    --panel:#1f1f1f;
+    --table-header:#2a2a2a;
+    --table-even:#1a1a1a;
+    --border:#444444;
+    --input-bg:#1e1e1e;
+    --button-bg:#2d2d2d;
+}
+
+textarea{
+    width:100%;
+    height:450px;
+    font-family:Consolas,monospace;
+    background:var(--input-bg);
+    color:var(--text);
+    border:1px solid var(--border);
+}
+
+button{
+    padding:10px 20px;
+    margin-top:10px;
+    cursor:pointer;
+    background:var(--button-bg);
+    color:var(--text);
+    border:1px solid var(--border);
+}
+
+.settings{
+    background:var(--panel);
+    padding:15px;
+    border-radius:6px;
+    margin-bottom:15px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+th,td{
+    border:1px solid var(--border);
+    padding:8px;
+    text-align:left;
+    font-size:17px;
+}
+th{
+    background:var(--table-header);
+}
+
+tr:nth-child(even){
+    background:var(--table-even);
+}
+
+select,
+input{
+    background:var(--input-bg);
+    color:var(--text);
+    border:1px solid var(--border);
+}
+
+.note{
+    margin-top:15px;
+    font-style:italic;
+}
+</style>
+</head>
+<body>
+
+<h1>PP2 laskuri</h1>
+<button id="themeToggle">🌙 Dark Mode</button>
+
+<div class="settings">
+
+<label>
+Pisteytys:
+<select id="scoringSystem">
+    <option value="10">10,9,8,7,6,5,4,3,2,1</option>
+    <option value="12">12,11,10,9,8,7,6,5,4,3,2,1</option>
+    <option value="14">14,12,10,9,8,7,6,5,4,3,2,1</option>
+</select>
+</label>
+
+<label style="margin-left:20px;">
+<input type="checkbox" id="bigFishEnabled" checked>
+Isoin kala +1 piste
+</label>
+
+<label style="margin-left:20px;">
+Tasoitukset:
+<select id="tieMode">
+    <option value="normal">Sijoitusten mukaan</option>
+    <option value="equal">Tasoitetut pisteet</option>
+</select>
+</label>
+
+</div>
+
+<textarea id="input"
+placeholder="Liitä logit tähän..."></textarea>
+
+<br>
+
+<button onclick="laske()">Laske pisteet</button>
+<button id="copyBBCodeBtn" onclick="copyBBCode()" disabled>Kopioi BBCode</button>
+
+<div id="tulos"></div>
+
+<script>
+const savedTheme = localStorage.getItem("theme");
+
+if(savedTheme === "dark"){
+    document.body.classList.add("dark");
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+
+    const btn = document.getElementById("themeToggle");
+
+    function updateButton(){
+        btn.textContent =
+            document.body.classList.contains("dark")
+            ? "☀️ Light Mode"
+            : "🌙 Dark Mode";
+    }
+
+    updateButton();
+
+    btn.addEventListener("click", () => {
+
+        document.body.classList.toggle("dark");
+
+        localStorage.setItem(
+            "theme",
+            document.body.classList.contains("dark")
+                ? "dark"
+                : "light"
+        );
+
+        updateButton();
+    });
+
+});
+
+function getTeam(text){
+
+    const m = text.match(/^\[([^\]]+)\]/);
+
+    return m ? m[1] : "-";
+}
+
+function cleanName(text){
+
+    text = text.replace(/^\[[^\]]+\]\s*/,'');
+    text = text.replace(/\[[A-Z]{2,3}\]/g,'');
+    text = text.replace(/\((A|C)\)/g,'');
+    text = text.replace(/<-/g,'');
+    text = text.replace(/\*/g,'');
+    text = text.trim();
+
+    return text;
+}
+
+function getPoints(place){
+
+    const system =
+        document.getElementById("scoringSystem").value;
+
+    if(system === "10"){
+        return [10,9,8,7,6,5,4,3,2,1][place-1] || 0;
+    }
+
+    if(system === "12"){
+        return [12,11,10,9,8,7,6,5,4,3,2,1][place-1] || 0;
+    }
+
+    if(system === "14"){
+        return [14,12,10,9,8,7,6,5,4,3,2,1][place-1] || 0;
+    }
+
+    return 0;
+}
+
+
+function parseBigFishLine(line, competitionName, players, biggestFish){
+
+    if(!line){
+        return false;
+    }
+
+    // Sallitaan hieman vaihtelevat muodot, esimerkiksi:
+    // Pelaaja Ahven 706 g
+    // Pelaaja Ahven 706g
+    // Pelaaja - Ahven - 706 g
+    const cleaned = line
+        .replace(/^.*?(?:Isoin kala|Suurin kala|Biggest fish)\s*:?\s*/i, "")
+        .replace(/\s*[-–—|]\s*/g, " ")
+        .trim();
+
+    const m = cleaned.match(
+        /^(.+?)\s+([A-Za-zÅÄÖåäö.\-]+)\s+(\d+)\s*g?\s*$/i
+    );
+
+    if(!m){
+        return false;
+    }
+
+    const winner = cleanName(m[1]);
+    const species = m[2];
+    const weight = parseInt(m[3]);
+
+    if(!winner || !species || !Number.isFinite(weight)){
+        return false;
+    }
+
+    if(players[winner] && players[winner].placements.length){
+        players[winner]
+            .placements[
+                players[winner].placements.length - 1
+            ]
+            .bigFish = true;
+    }
+
+    biggestFish.push({
+        lake: competitionName || "-",
+        player: winner,
+        species: species,
+        weight: weight
+    });
+
+    return true;
+}
+
+function laske(){
+
+    const text =
+        document.getElementById("input").value;
+
+    const players = {};
+    const allResults = [];
+    const biggestFish = [];
+
+    const lines = text.split('\n');
+
+    let readingResults = false;
+    let waitingBigFish = false;
+    let competitionId = 0;
+    let competitionName = "";
+
+    for(let rawLine of lines){
+
+        const line = rawLine.trim();
+
+        const startMatch = line.match(/^New .* competition started:\s*(.+?)\./i);
+        if(startMatch){
+            competitionName = startMatch[1].trim();
+        }
+
+        if(line.includes("Competition finished. Results")){
+            readingResults = true;
+            competitionId++;
+            continue;
+        }
+
+        if(
+            /(?:Isoin kala|Suurin kala|Biggest fish)/i.test(line)
+        ){
+            readingResults = false;
+            waitingBigFish = true;
+
+            // Jos suurimman kalan tiedot ovat samalla rivillä
+            // otsikon kanssa, käsitellään ne heti.
+            if(
+                parseBigFishLine(
+                    line,
+                    competitionName,
+                    players,
+                    biggestFish
+                )
+            ){
+                waitingBigFish = false;
+            }
+
+            continue;
+        }
+
+        if(waitingBigFish){
+
+            if(
+                parseBigFishLine(
+                    line,
+                    competitionName,
+                    players,
+                    biggestFish
+                )
+            ){
+                waitingBigFish = false;
+            }
+
+            continue;
+        }
+
+        if(!readingResults){
+            continue;
+        }
+
+        const disq =
+            line.includes("(disq)");
+
+        const match =
+            line.match(
+                /^\*?\s*(\d+)\.\s+(.+?)\s+(\d+)\s*g/i
+            );
+
+        if(!match){
+            continue;
+        }
+
+        const place =
+            parseInt(match[1]);
+
+        const originalName =
+            match[2];
+
+        const weight =
+            parseInt(match[3]);
+
+        const team =
+            getTeam(originalName);
+
+        const name =
+            cleanName(originalName);
+
+        if(!players[name]){
+
+            players[name] = {
+                team: team,
+                points: 0,
+                placements: []
+            };
+        }
+
+        players[name].placements.push({
+            competition: competitionId,
+            place: place,
+            weight: weight,
+            bigFish: false,
+            disq: disq
+        });
+
+        allResults.push({
+            competition: competitionId,
+            player: name,
+            place: place,
+            weight: weight,
+            disq: disq
+        });
+    }
+
+    const tieMode =
+        document.getElementById("tieMode").value;
+
+    for(const playerName in players){
+
+        let total = 0;
+
+players[playerName].placements.forEach(p=>{
+
+    if(p.disq){
+        return;
+    }
+
+    // 0 g tuloksesta ei pisteitä
+    if(p.weight <= 0){
+        return;
+    }
+
+    let points =
+        getPoints(p.place);
+
+            if(tieMode === "equal"){
+
+                const sameWeight =
+                    allResults.filter(r =>
+                        r.competition === p.competition &&
+                        !r.disq &&
+                        r.weight === p.weight
+                    );
+
+                if(sameWeight.length > 1){
+
+                    const bestPlace =
+                        Math.min(
+                            ...sameWeight.map(r=>r.place)
+                        );
+
+                    points =
+                        getPoints(bestPlace);
+                }
+            }
+
+            total += points;
+
+            if(
+                p.bigFish &&
+                document.getElementById("bigFishEnabled").checked
+            ){
+                total += 1;
+            }
+        });
+
+        players[playerName].points = total;
+    }
+
+    const ranking =
+        Object.entries(players)
+        .sort((a,b)=>{
+
+            if(b[1].points !== a[1].points){
+                return b[1].points - a[1].points;
+            }
+
+            for(let pos=1; pos<=50; pos++){
+
+                const aCount =
+                    a[1].placements.filter(
+                        p=>p.place===pos
+                    ).length;
+
+                const bCount =
+                    b[1].placements.filter(
+                        p=>p.place===pos
+                    ).length;
+
+                if(bCount !== aCount){
+                    return bCount - aCount;
+                }
+            }
+
+            return a[0].localeCompare(b[0]);
+        });
+
+    let html = `
+    <h2>Tulokset</h2>
+
+    <table>
+    <tr>
+        <th>Sija</th>
+        <th>Pelaaja</th>
+        <th>Joukkue</th>
+        <th>Pisteet</th>
+        <th>Sijoitukset</th>
+    </tr>
+    `;
+
+    ranking.forEach((row,index)=>{
+
+        const player =
+            row[1];
+
+        const placements =
+            player.placements
+            .map(p => {
+
+                const value =
+                    p.bigFish
+                    ? `<strong>${p.place}</strong>`
+                    : `${p.place}`;
+
+                return value;
+            })
+            .join(", ");
+
+        html += `
+        <tr>
+            <td>${index+1}</td>
+            <td>${row[0]}</td>
+            <td>${player.team}</td>
+            <td>${player.points}</td>
+            <td>${placements}</td>
+        </tr>
+        `;
+    });
+
+    html += `
+    </table>
+
+    <div class="note">
+        <strong>Suurin kala merkattu boldattuna.</strong>
+    </div>
+    `;
+
+    document.getElementById("tulos").innerHTML = html;
+    window.latestRanking = ranking;
+    window.biggestFish = biggestFish;
+    document.getElementById("copyBBCodeBtn").disabled = false;
+}
+
+
+function copyBBCode(){
+
+    if(!window.latestRanking) return;
+
+    function pad(text, width){
+        text = String(text);
+        return text + " ".repeat(Math.max(0, width - text.length));
+    }
+
+    function monospaceBlock(text){
+        // Tavalliset välilyönnit muutetaan sitoviksi välilyönneiksi,
+        // jotta sarakkeet pysyvät kohdakkain ilman [code]-lohkoa.
+        return "[font=monospace]" +
+            text.replace(/ /g, "\u00A0") +
+            "[/font]";
+    }
+
+    const rows = window.latestRanking.map((row,index)=>{
+
+        const player = row[1];
+
+        return {
+            sija: (index+1)+".",
+            pelaaja: row[0],
+            joukkue: player.team,
+            sijoitukset: player.placements
+                .map(p=>p.place)
+                .join(","),
+            pisteet: String(player.points)
+        };
+
+    });
+
+    const wSija = Math.max(4,...rows.map(r=>r.sija.length));
+    const wPelaaja = Math.max(7,...rows.map(r=>r.pelaaja.length));
+    const wJoukkue = Math.max(7,...rows.map(r=>r.joukkue.length));
+    const wSijoitukset = Math.max(11,...rows.map(r=>r.sijoitukset.length));
+    const wPisteet = Math.max(7,...rows.map(r=>r.pisteet.length));
+
+    let resultsText = "";
+
+    resultsText +=
+        pad("Sija",wSija)+"  "+
+        pad("Pelaaja",wPelaaja)+"  "+
+        pad("Joukkue",wJoukkue)+"  "+
+        pad("Sijoitukset",wSijoitukset)+"  "+
+        pad("Pisteet",wPisteet)+"\n";
+
+    resultsText += "-".repeat(
+        wSija+wPelaaja+wJoukkue+wSijoitukset+wPisteet+10
+    )+"\n";
+
+    rows.forEach(r=>{
+
+        resultsText +=
+            pad(r.sija,wSija)+"  "+
+            pad(r.pelaaja,wPelaaja)+"  "+
+            pad(r.joukkue,wJoukkue)+"  "+
+            pad(r.sijoitukset,wSijoitukset)+"  "+
+            pad(r.pisteet,wPisteet)+"\n";
+
+    });
+
+    let bb =
+        "[b]Tulokset[/b]\n\n" +
+        monospaceBlock(resultsText.trimEnd());
+
+    if(window.biggestFish.length){
+
+        let fishText = "";
+
+        fishText +=
+            pad("Vesistö",18)+"  "+
+            pad("Pelaaja",20)+"  "+
+            pad("Laji",12)+"  "+
+            "Paino\n";
+
+        fishText += "-".repeat(62)+"\n";
+
+        window.biggestFish.forEach(f=>{
+
+            fishText +=
+                pad(f.lake,18)+"  "+
+                pad(f.player,20)+"  "+
+                pad(f.species,12)+"  "+
+                f.weight+" g\n";
+        });
+
+        bb +=
+            "\n\n[b]Suurimmat kalat[/b]\n\n" +
+            monospaceBlock(fishText.trimEnd());
+    }
+
+    navigator.clipboard.writeText(bb);
+
+    alert("BBCode kopioitu leikepöydälle.");
+}
+
+</script>
+
+</body>
+</html>
