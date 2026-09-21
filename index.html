@@ -685,13 +685,11 @@ function copyBBCode(){
         return text + " ".repeat(Math.max(0, width - text.length));
     }
 
-    function monospaceBlock(text){
-        // Tavalliset välilyönnit muutetaan sitoviksi välilyönneiksi,
-        // jotta sarakkeet pysyvät kohdakkain ilman [code]-lohkoa.
-        return "[font=monospace]" +
-            text.replace(/ /g, "\u00A0") +
-            "[/font]";
-    }
+function monospaceBlock(text){
+    return "[font=Cascadia Mono SemiBold]" +
+        text.replace(/ /g, "\u00A0") +
+        "[/font]";
+}
 
     const rows = window.latestRanking.map((row,index)=>{
 
@@ -739,9 +737,9 @@ function copyBBCode(){
 
     });
 
-    let bb =
-        "[b]Tulokset[/b]\n\n" +
-        monospaceBlock(resultsText.trimEnd());
+let bb =
+    "[size=3][b]Tulokset[/b][/size]\n\n" +
+    monospaceBlock(resultsText.trimEnd());
 
     if(window.biggestFish.length){
 
@@ -764,9 +762,9 @@ function copyBBCode(){
                 f.weight+" g\n";
         });
 
-        bb +=
-            "\n\n[b]Suurimmat kalat[/b]\n\n" +
-            monospaceBlock(fishText.trimEnd());
+bb +=
+    "\n\n[size=3][b]Suurimmat kalat[/b][/size]\n\n" +
+    monospaceBlock(fishText.trimEnd());
     }
 
     navigator.clipboard.writeText(bb);
