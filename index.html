@@ -62,14 +62,154 @@ body > h1{
     margin-bottom:24px;
 }
 
-.settings{
-    clear:both;
+.topBar{
     display:flex;
-    flex-wrap:wrap;
-    gap:16px;
-    align-items:end;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:24px;
+}
+
+.topBar h1{
+    margin:0;
+}
+
+.gameMode{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    color:var(--muted);
+    font-size:14px;
+    font-weight:600;
+}
+
+.gameMode select{
+    min-width:210px;
+}
+
+.teamSettings{
     background:linear-gradient(180deg,var(--panel2),var(--panel));
-    padding:20px;
+    padding:16px 20px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    margin-bottom:18px;
+    box-shadow:var(--shadow);
+}
+
+.inputTeamLayout{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:18px;
+    margin-bottom:18px;
+}
+
+.inputTeamLayout.hasTeams{
+    grid-template-columns:1fr 1fr;
+}
+
+.inputTeamLayout .inputBox,
+.inputTeamLayout .teamSettings{
+    margin:0;
+}
+
+.inputBox{
+    background:linear-gradient(180deg,var(--panel2),var(--panel));
+    padding:16px 20px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    box-shadow:var(--shadow);
+}
+
+.inputBox label,
+.teamSettings label{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    color:var(--muted);
+    font-size:14px;
+    font-weight:600;
+}
+
+.inputBox textarea,
+.teamSettings textarea{
+    width:100%;
+    height:320px;
+    min-height:320px;
+    resize:vertical;
+}
+
+.inputBox h2,
+.teamSettings h2{
+    margin:0 0 12px;
+    font-size:18px;
+}
+
+.teamSettings label{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    color:var(--muted);
+    font-size:14px;
+    font-weight:600;
+}
+
+#teamInput{
+    width:100%;
+    min-height:140px;
+    resize:vertical;
+    box-sizing:border-box;
+}
+
+#teamButton{
+    margin-top:12px;
+    padding:10px 18px;
+    border:0;
+    border-radius:9px;
+    background:var(--accent);
+    color:white;
+    font:inherit;
+    font-weight:600;
+    cursor:pointer;
+}
+
+#teamButton:hover{
+    background:var(--accent-hover);
+}
+
+.teamFileSettings{
+    background:linear-gradient(180deg,var(--panel2),var(--panel));
+    padding:16px 20px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    margin-bottom:18px;
+    box-shadow:var(--shadow);
+}
+
+.teamFileSettings label{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    color:var(--muted);
+    font-size:14px;
+    font-weight:600;
+}
+
+.teamFileSettings input[type="file"]{
+    width:100%;
+    min-height:42px;
+    padding:8px 10px;
+    background:var(--input-bg);
+    color:var(--text);
+    border:1px solid var(--border);
+    border-radius:9px;
+}
+
+.settings{
+    display:flex;
+    align-items:flex-start;
+    gap:20px;
+    flex-wrap:wrap;
+    background:linear-gradient(180deg,var(--panel2),var(--panel));
+    padding:16px 20px;
     border:1px solid var(--border);
     border-radius:14px;
     margin-bottom:18px;
@@ -84,6 +224,35 @@ body > h1{
     display:flex;
     flex-direction:column;
     gap:7px;
+}
+
+#customScoring{
+    width:100%;
+    margin-top:4px;
+    padding:16px;
+    background:var(--input-bg);
+    border:1px solid var(--border);
+    border-radius:10px;
+}
+
+#customScoring > div{
+    display:grid;
+    grid-template-columns:repeat(5, 1fr);
+    gap:12px;
+}
+
+#customScoring label{
+    margin:0 !important;
+    padding:0 !important;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    color:var(--muted);
+    font-size:13px;
+}
+
+#customScoring input{
+    width:100%;
 }
 
 .settings input[type="checkbox"]{
@@ -256,13 +425,23 @@ th:nth-child(4){
 @media(max-width:800px){
     body{padding:16px}
     h1{font-size:26px}
-    body > h1{display:block;margin-bottom:10px}
+
+    .topBar{
+        flex-direction:column;
+        gap:12px;
+        margin-bottom:10px;
+    }
+
     .settings{align-items:stretch}
     .settings label{width:100%}
     select{width:100%}
     textarea{height:260px}
     #tulos{padding:14px}
     th,td{padding:10px 9px;font-size:14px}
+
+    .inputTeamLayout{
+        grid-template-columns:1fr;
+    }
 }
 
 @media(max-width:520px){
@@ -271,46 +450,226 @@ th:nth-child(4){
     button{width:100%}
     textarea{height:220px}
 }
+.settingsTopRow{
+    display:flex;
+    align-items:flex-start;
+    gap:20px;
+    width:100%;
+    flex-wrap:nowrap;
+}
+
+.settingsTopRow > label{
+    flex:0 0 auto;
+}
+
+#customScoring{
+    flex-basis:100%;
+}
+.copyButtons{
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+}
+
+.copyButtons button{
+    margin-top:0;
+}
 </style>
 </head>
 <body>
+<div class="topBar">
 
-<h1> PP2 laskuri</h1>
+    <h1>PP2 laskuri</h1>
 
+    <label class="gameMode">
+        Pelimuoto:
+        <select id="gameMode" onchange="toggleTeamSettings()">
+            <option value="individual">Yksilökilpailu</option>
+            <option value="pairs">Parikilpailu</option>
+            <option value="team3">3 hengen joukkue</option>
+            <option value="team4">4 hengen joukkue</option>
+            <option value="team">Joukkuekisa</option>
+        </select> 
+    </label> 
+ 
+</div> 
 
 <div class="settings">
 
+<div class="settingsTopRow">
+
 <label>
 Pisteytys:
-<select id="scoringSystem">
-    <option value="10">10,9,8,7,6,5,4,3,2,1</option>
-    <option value="12">12,11,10,9,8,7,6,5,4,3,2,1</option>
-    <option value="14">14,12,10,9,8,7,6,5,4,3,2,1</option>
-</select>
+<select id="scoringSystem" onchange="toggleCustomScoring()">
+    <option value="10">10,9,8,7,6,5,4,3,2,1</option> 
+    <option value="12">12,11,10,9,8,7,6,5,4,3,2,1</option> 
+    <option value="14">14,12,10,9,8,7,6,5,4,3,2,1</option> 
+    <option value="custom">Mukautettu</option> 
+</select> 
 </label>
 
-<label style="margin-left:20px;">
-<input type="checkbox" id="bigFishEnabled" checked>
-Isoin kala +1 piste
+<label>
+Pisteet suurimmasta kalasta:
+<input type="number" id="bigFishPoints" value="1" min="0" step="1"> 
 </label>
 
-<label style="margin-left:20px;">
+<label>
 Tasoitukset:
-<select id="tieMode">
-    <option value="normal">Sijoitusten mukaan</option>
-    <option value="equal">Tasoitetut pisteet</option>
-</select>
+<select id="tieMode"> 
+    <option value="normal">Sijoitusten mukaan</option> 
+    <option value="equal">Tasoitetut pisteet</option> 
+</select> 
 </label>
 
 </div>
+<div id="customScoring" style="display:none;">
+    <div> 
 
-<textarea id="input"
-placeholder="Liitä logit tähän..."></textarea>
+        <label> 
+            1. sija 
+            <input type="number" id="custom1" min="0" value="0"> 
+        </label> 
+ 
+        <label> 
+            2. sija 
+            <input type="number" id="custom2" min="0" value="0"> 
+        </label> 
+ 
+        <label> 
+            3. sija 
+            <input type="number" id="custom3" min="0" value="0"> 
+        </label> 
+ 
+        <label> 
+            4. sija 
+            <input type="number" id="custom4" min="0" value="0"> 
+        </label> 
+ 
+        <label> 
+            5. sija 
+            <input type="number" id="custom5" min="0" value="0"> 
+        </label> 
+ 
+        <label> 
+            6. sija 
+            <input type="number" id="custom6" min="0" value="0"> 
+        </label> 
+ 
+        <label> 
+            7. sija 
+            <input type="number" id="custom7" min="0" value="0"> 
+        </label> 
+ 
+        <label> 
+            8. sija 
+            <input type="number" id="custom8" min="0" value="0"> 
+        </label> 
+ 
+        <label> 
+            9. sija 
+            <input type="number" id="custom9" min="0" value="0"> 
+        </label> 
+ 
+        <label> 
+            10. sija 
+            <input type="number" id="custom10" min="0" value="0"> 
+        </label> 
+ 
+        <label> 
+            11. sija 
+            <input type="number" id="custom11" min="0" value="0"> 
+        </label> 
+ 
+        <label> 
+            12. sija 
+            <input type="number" id="custom12" min="0" value="0"> 
+        </label> 
+ 
+        <label> 
+            13. sija 
+            <input type="number" id="custom13" min="0" value="0"> 
+        </label> 
+ 
+        <label> 
+            14. sija 
+            <input type="number" id="custom14" min="0" value="0"> 
+        </label> 
+ 
+        <label> 
+            15. sija 
+            <input type="number" id="custom15" min="0" value="0"> 
+        </label> 
+ 
+        <label> 
+            16. sija 
+            <input type="number" id="custom16" min="0" value="0"> 
+        </label> 
+ 
+        <label> 
+            17. sija 
+            <input type="number" id="custom17" min="0" value="0"> 
+        </label> 
+ 
+        <label> 
+            18. sija 
+            <input type="number" id="custom18" min="0" value="0"> 
+        </label> 
+ 
+        <label> 
+            19. sija 
+            <input type="number" id="custom19" min="0" value="0"> 
+        </label> 
+ 
+        <label> 
+            20. sija 
+            <input type="number" id="custom20" min="0" value="0"> 
+        </label> 
 
-<br>
+    </div> 
+</div> 
+ 
 
-<button onclick="laske()">Laske pisteet</button>
-<button id="copyBBCodeBtn" onclick="copyBBCode()" disabled>Kopioi BBCode</button>
+</div> 
+
+<div class="inputTeamLayout">
+
+    <div class="inputBox">
+
+        <h2>Playlogit</h2>
+
+        <textarea id="input"
+        placeholder="Liitä logit tähän..."></textarea>
+
+        <button onclick="laske()">Laske pisteet</button>
+
+<div class="copyButtons">
+
+    <button id="copyBBCodeBtn" onclick="copyBBCode()" disabled>
+        Kopioi BBCode
+    </button>
+
+    <button id="copyImageBtn" onclick="copyResultsImage()" disabled>
+        Kopioi kuva
+    </button>
+
+</div>
+
+    </div>
+
+
+    <div id="teamSettings" class="teamSettings" style="display:none;">
+
+        <h2>Parit / Joukkueet</h2>
+
+        <textarea id="teamInput" placeholder="Yksi joukkue per rivi. Ohjelma tunnistaa nimet playlogista"></textarea>
+
+        <button type="button" id="teamButton" onclick="createTeams()">
+            Tee joukkueet
+        </button>
+
+    </div>
+
+</div>
 
 <div id="tulos"></div>
 
@@ -340,6 +699,983 @@ function cleanName(text){
     return text;
 }
 
+function toggleCustomScoring(){
+
+    const scoringSystem =
+        document.getElementById("scoringSystem").value;
+
+    const customScoring =
+        document.getElementById("customScoring");
+
+    customScoring.style.display =
+        scoringSystem === "custom" ? "block" : "none";
+}
+
+function toggleTeamSettings(){
+
+    const gameMode =
+        document.getElementById("gameMode").value;
+
+    const teamSettings =
+        document.getElementById("teamSettings");
+
+    const inputTeamLayout =
+        document.querySelector(".inputTeamLayout");
+
+    const showTeams =
+        gameMode === "pairs" ||
+        gameMode === "team3" ||
+        gameMode === "team4";
+
+    teamSettings.style.display =
+        showTeams ? "block" : "none";
+
+    inputTeamLayout.classList.toggle(
+        "hasTeams",
+        showTeams
+    );
+}
+
+let teamsCreated = false;
+let createdTeams = [];
+
+
+// Muuttaa pelaajan nimen vertailua varten
+function normalizePlayerName(name){
+
+    return name
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9åäö]/gi, "")
+        .trim();
+}
+
+
+// Laskee kahden tekstin samankaltaisuuden
+function levenshteinDistance(a, b){
+
+    const matrix = [];
+
+    for(let i = 0; i <= b.length; i++){
+        matrix[i] = [i];
+    }
+
+    for(let j = 0; j <= a.length; j++){
+        matrix[0][j] = j;
+    }
+
+    for(let i = 1; i <= b.length; i++){
+
+        for(let j = 1; j <= a.length; j++){
+
+            if(b.charAt(i - 1) === a.charAt(j - 1)){
+
+                matrix[i][j] =
+                    matrix[i - 1][j - 1];
+
+            }else{
+
+                matrix[i][j] =
+                    Math.min(
+                        matrix[i - 1][j - 1] + 1,
+                        matrix[i][j - 1] + 1,
+                        matrix[i - 1][j] + 1
+                    );
+            }
+        }
+    }
+
+    return matrix[b.length][a.length];
+}
+
+
+// Kuinka monta kirjoitusvirhettä voidaan hyväksyä
+function getAllowedDistance(name){
+
+    const length =
+        normalizePlayerName(name).length;
+
+    if(length <= 5){
+        return 1;
+    }
+
+    if(length <= 10){
+        return 2;
+    }
+
+    return 3;
+}
+
+
+// Hakee Playlogista kaikki pelaajat
+function getPlayerNamesFromResults(){
+
+    const text =
+        document.getElementById("input").value;
+
+    const names = [];
+
+    const lines =
+        text.split("\n");
+
+    let readingResults = false;
+
+    for(const rawLine of lines){
+
+        const line =
+            rawLine.trim();
+
+        if(line.includes("Competition finished. Results")){
+            readingResults = true;
+            continue;
+        }
+
+        if(
+            /(?:Isoin kala|Suurin kala|Biggest fish)/i.test(line)
+        ){
+            readingResults = false;
+            continue;
+        }
+
+        if(!readingResults){
+            continue;
+        }
+
+        const match =
+            line.match(
+                /^\*?\s*(\d+)\.\s+(.+?)\s+(\d+)\s*g/i
+            );
+
+        if(!match){
+            continue;
+        }
+
+        const name =
+            cleanName(match[2]);
+
+        if(!names.includes(name)){
+            names.push(name);
+        }
+    }
+
+    return names;
+}
+
+
+// Etsii yhden pelaajan nimen Playlogista
+function findPlayerName(inputName, playerNames){
+
+    const wanted =
+        normalizePlayerName(inputName);
+
+    if(!wanted){
+        return null;
+    }
+
+
+    // Ensin tarkka normalisoitu osuma
+    for(const playerName of playerNames){
+
+        if(
+            normalizePlayerName(playerName) === wanted
+        ){
+            return playerName;
+        }
+    }
+
+
+    // Sen jälkeen pieniä kirjoituseroja salliva osuma
+    let bestMatch = null;
+    let bestDistance = Infinity;
+
+    for(const playerName of playerNames){
+
+        const candidate =
+            normalizePlayerName(playerName);
+
+        const distance =
+            levenshteinDistance(
+                wanted,
+                candidate
+            );
+
+        const allowed =
+            getAllowedDistance(playerName);
+
+        if(
+            distance <= allowed &&
+            distance < bestDistance
+        ){
+            bestMatch = playerName;
+            bestDistance = distance;
+        }
+    }
+
+    return bestMatch;
+}
+
+
+function findPlayersInTeamLine(line, playerNames){
+
+    const foundPlayers = [];
+
+    // Pelaajien välissä voi olla mitä tahansa:
+    // välilyönti, "ja", ; , + jne.
+    const words =
+        line
+            .replace(/[;,|+]/g, " ")
+            .replace(/\bja\b/gi, " ")
+            .replace(/\band\b/gi, " ")
+            .split(/\s+/)
+            .filter(word => word !== "");
+
+
+    if(words.length === 0){
+        return [];
+    }
+
+
+    // Pelaajien nimet pisimmästä lyhyimpään.
+    // Tämä auttaa moniosaisissa nimissä.
+    const candidates =
+        [...playerNames].sort(
+            (a,b) =>
+                normalizePlayerName(b).length -
+                normalizePlayerName(a).length
+        );
+
+
+    let remainingWords = [...words];
+
+    let safetyCounter = 0;
+
+
+    while(
+        remainingWords.length > 0 &&
+        safetyCounter < 50
+    ){
+
+        safetyCounter++;
+
+
+        let bestMatch = null;
+        let bestStart = -1;
+        let bestEnd = -1;
+        let bestDistance = Infinity;
+
+
+        // Käydään kaikki mahdolliset sanayhdistelmät läpi.
+        for(let start = 0; start < remainingWords.length; start++){
+
+            let combined = "";
+
+
+            for(
+                let end = start;
+                end < remainingWords.length;
+                end++
+            ){
+
+                combined +=
+                    normalizePlayerName(
+                        remainingWords[end]
+                    );
+
+
+                if(!combined){
+                    continue;
+                }
+
+
+                for(const playerName of candidates){
+
+                    if(foundPlayers.includes(playerName)){
+                        continue;
+                    }
+
+
+                    const normalizedPlayer =
+                        normalizePlayerName(playerName);
+
+                    if(!normalizedPlayer){
+                        continue;
+                    }
+
+
+                    const distance =
+                        levenshteinDistance(
+                            combined,
+                            normalizedPlayer
+                        );
+
+
+                    const allowed =
+                        getAllowedDistance(playerName);
+
+
+                    // Täsmälleen sama nimi
+                    // tai riittävän lähellä oleva nimi.
+                    if(distance <= allowed){
+
+                        // Valitaan ensisijaisesti
+                        // tarkin osuma.
+                        if(
+                            distance < bestDistance ||
+                            (
+                                distance === bestDistance &&
+                                combined.length >
+                                (
+                                    bestMatch
+                                        ? normalizePlayerName(bestMatch).length
+                                        : 0
+                                )
+                            )
+                        ){
+
+                            bestMatch = playerName;
+                            bestStart = start;
+                            bestEnd = end;
+                            bestDistance = distance;
+                        }
+                    }
+                }
+
+
+                // Jos yhdistelmä on jo selvästi
+                // pidempi kuin pelaajanimi,
+                // ei sitä tarvitse enää kasvattaa.
+                const longestAllowed =
+                    candidates.some(playerName => {
+
+                        const playerLength =
+                            normalizePlayerName(playerName).length;
+
+                        return (
+                            combined.length <=
+                            playerLength +
+                            getAllowedDistance(playerName)
+                        );
+                    });
+
+
+                if(!longestAllowed){
+                    break;
+                }
+            }
+        }
+
+
+        // Pelaajaa ei löytynyt.
+        if(!bestMatch){
+            break;
+        }
+
+
+        foundPlayers.push(bestMatch);
+
+
+        // Poistetaan löydetty pelaaja sanoista.
+        remainingWords.splice(
+            bestStart,
+            bestEnd - bestStart + 1
+        );
+    }
+
+
+    return foundPlayers;
+}
+
+function createTeams(){
+
+    const textarea =
+        document.getElementById("teamInput");
+
+    const button =
+        document.getElementById("teamButton");
+
+    const playerNames =
+        getPlayerNamesFromResults();
+
+    const lines =
+        textarea.value
+            .split("\n")
+            .map(line => line.trim())
+            .filter(line => line !== "");
+
+
+    const teams = [];
+
+
+    for(const line of lines){
+
+        // Yritetään tunnistaa riviltä kaikki
+        // Playlogissa esiintyvät pelaajat.
+        const foundPlayers =
+            findPlayersInTeamLine(
+                line,
+                playerNames
+            );
+
+
+        // Jos pelaajia löytyi Playlogista,
+        // käytetään niitä.
+        if(foundPlayers.length > 0){
+
+            teams.push(foundPlayers);
+
+        }else{
+
+            // Jos pelaajaa ei tunnistettu,
+            // pidetään nykyinen puolipiste-erottelu
+            // varajärjestelmänä.
+            const names =
+                line
+                    .split(";")
+                    .map(name => name.trim())
+                    .filter(name => name !== "");
+
+            if(names.length > 0){
+                teams.push(names);
+            }
+        }
+    }
+
+
+    createdTeams = teams;
+
+
+    // Näytetään tunnistetut oikeat pelaajanimet
+    // takaisin tekstikentässä.
+    textarea.value =
+        teams
+            .map(team => team.join("; "))
+            .join("\n");
+
+
+    textarea.readOnly = true;
+
+    button.textContent =
+        "Muokkaa joukkueita";
+
+    button.onclick =
+        editTeams;
+
+    teamsCreated = true;
+}
+
+
+function editTeams(){
+
+    const textarea =
+        document.getElementById("teamInput");
+
+    const button =
+        document.getElementById("teamButton");
+
+    textarea.readOnly = false;
+
+    textarea.focus();
+
+    button.textContent =
+        "Tee joukkueet";
+
+    button.onclick =
+        createTeams;
+
+    teamsCreated = false;
+}
+
+function editTeams(){
+
+    const textarea =
+        document.getElementById("teamInput");
+
+    const button =
+        document.getElementById("teamButton");
+
+    textarea.readOnly = false;
+
+    textarea.focus();
+
+    button.textContent =
+        "Tee joukkueet";
+
+    button.onclick =
+        createTeams;
+
+    teamsCreated = false;
+}
+
+function calculateTeamRanking(){
+
+    const gameMode =
+        document.getElementById("gameMode").value;
+
+    /*
+     * JOUKKUEKISA
+     *
+     * Joukkue muodostetaan suoraan Playlogin [TEAM]-tagin perusteella.
+     * Kaikki saman tagin pelaajat kuuluvat samaan joukkueeseen,
+     * riippumatta pelaajien määrästä.
+     */
+    if(gameMode === "team"){
+
+        if(!window.latestPlayers){
+            return [];
+        }
+
+        const teams = {};
+
+        for(const playerName in window.latestPlayers){
+
+            const player =
+                window.latestPlayers[playerName];
+
+            const teamName =
+                player.team;
+
+            // Pelaaja ilman team-tagia ei kuulu joukkuekilpailuun
+            if(!teamName || teamName === "-"){
+                continue;
+            }
+
+            if(!teams[teamName]){
+
+                teams[teamName] = {
+                    teamName: teamName,
+                    players: [],
+                    points: 0
+                };
+            }
+
+            teams[teamName].players.push(playerName);
+
+            teams[teamName].points +=
+                player.points;
+        }
+
+        const teamRanking =
+            Object.values(teams);
+
+        teamRanking.sort(
+            (a,b) => b.points - a.points
+        );
+
+        return teamRanking;
+    }
+
+
+    /*
+     * PARI- JA 3/4 HENGEN JOUKKUEET
+     *
+     * Näiden nykyinen toiminta säilytetään ennallaan.
+     */
+    if(createdTeams.length === 0){
+        return [];
+    }
+
+    const teamRanking = [];
+
+    for(let i = 0; i < createdTeams.length; i++){
+
+        const team = createdTeams[i];
+
+        let totalPoints = 0;
+
+        for(const playerName of team){
+
+            const normalized =
+                normalizePlayerName(playerName);
+
+            for(const resultName in window.latestPlayers){
+
+                if(
+                    normalizePlayerName(resultName) === normalized
+                ){
+                    totalPoints +=
+                        window.latestPlayers[resultName].points;
+
+                    break;
+                }
+            }
+        }
+
+        teamRanking.push({
+            teamNumber: i + 1,
+            players: team,
+            points: totalPoints
+        });
+    }
+
+    teamRanking.sort(
+        (a,b) => b.points - a.points
+    );
+
+    return teamRanking;
+}
+function displayTeamRanking(){
+
+    const teamResults =
+        document.getElementById("teamResults");
+
+    const teamResultsBody =
+        document.getElementById("teamResultsBody");
+
+    const gameMode =
+        document.getElementById("gameMode").value;
+
+
+    /*
+     * JOUKKUEKISA
+     *
+     * Joukkueet muodostetaan Playlogin [TEAM]-tageista.
+     * Jokaiselle kilpailulle/vesistölle lasketaan
+     * joukkueen kaikkien pelaajien pisteet yhteen.
+     */
+    if(gameMode === "team"){
+
+        if(!window.latestPlayers){
+            teamResults.style.display = "none";
+            return;
+        }
+
+
+        /*
+         * Haetaan kaikki Playlogin team-tagit.
+         * Joukkueiden järjestys tulee siinä järjestyksessä,
+         * jossa ne ensimmäisen kerran esiintyvät Playlogissa.
+         */
+        const teams = [];
+
+        for(const playerName in window.latestPlayers){
+
+            const player =
+                window.latestPlayers[playerName];
+
+            const teamName =
+                player.team;
+
+            if(
+                !teamName ||
+                teamName === "-"
+            ){
+                continue;
+            }
+
+            if(!teams.includes(teamName)){
+                teams.push(teamName);
+            }
+        }
+
+
+        if(teams.length === 0){
+            teamResults.style.display = "none";
+            return;
+        }
+
+
+        /*
+         * Selvitetään kilpailuiden määrä
+         * pelaajien placement-tietojen perusteella.
+         */
+        let competitionCount = 0;
+
+        for(const playerName in window.latestPlayers){
+
+            const player =
+                window.latestPlayers[playerName];
+
+            for(const placement of player.placements){
+
+                if(
+                    placement.competition >
+                    competitionCount
+                ){
+                    competitionCount =
+                        placement.competition;
+                }
+            }
+        }
+
+
+        if(competitionCount === 0){
+            teamResults.style.display = "none";
+            return;
+        }
+
+
+        /*
+         * Rakennetaan taulukon otsikko.
+         */
+let headerHtml = `
+    <tr>
+        <th>Vesistö</th>
+`;
+
+teams.forEach(teamName => {
+
+    headerHtml += `
+        <th style="text-align:center; white-space:nowrap;">
+            ${teamName}
+        </th>
+    `;
+});
+
+headerHtml += `
+    </tr>
+`;
+
+
+        /*
+         * Rakennetaan jokainen vesistö omalle riville.
+         */
+        let rowsHtml = "";
+
+
+        for(let competition = 1;
+            competition <= competitionCount;
+            competition++
+        ){
+
+const lakeName =
+    window.latestCompetitionNames[competition] ||
+    `Vesistö ${competition}`;
+
+            rowsHtml += `
+                <tr>
+                    <td style="white-space:nowrap;">${lakeName}</td>
+            `;
+
+
+            /*
+             * Lasketaan jokaiselle joukkueelle
+             * kyseisen vesistön pisteet.
+             */
+            teams.forEach(teamName => {
+
+                let teamPoints = 0;
+
+
+                for(
+                    const playerName in window.latestPlayers
+                ){
+
+                    const player =
+                        window.latestPlayers[playerName];
+
+
+                    if(player.team !== teamName){
+                        continue;
+                    }
+
+
+                    const placements =
+                        player.placements.filter(
+                            p =>
+                                p.competition === competition
+                        );
+
+
+                    placements.forEach(p => {
+
+                        if(p.disq){
+                            return;
+                        }
+
+                        // 0 g tuloksesta ei pisteitä
+                        if(p.weight <= 0){
+                            return;
+                        }
+
+
+                        let points =
+                            getPoints(p.place);
+
+
+                        /*
+                         * Sama tasoituslogiikka kuin
+                         * nykyisessä pelaajalaskennassa.
+                         */
+                        const tieMode =
+                            document.getElementById("tieMode").value;
+
+
+                        if(tieMode === "equal"){
+
+const sameWeight =
+    window.latestAllResults.filter(r =>
+                                    r.competition === p.competition &&
+                                    !r.disq &&
+                                    r.weight === p.weight
+                                );
+
+
+                            if(sameWeight.length > 1){
+
+                                const bestPlace =
+                                    Math.min(
+                                        ...sameWeight.map(
+                                            r => r.place
+                                        )
+                                    );
+
+
+                                points =
+                                    getPoints(bestPlace);
+                            }
+                        }
+
+
+                        teamPoints += points;
+
+
+                        /*
+                         * Suurimman kalan piste kuuluu
+                         * myös kyseisen vesistön joukkuepisteisiin.
+                         */
+                        if(p.bigFish){
+
+                            const bigFishPoints =
+                                Number(
+                                    document.getElementById(
+                                        "bigFishPoints"
+                                    ).value
+                                ) || 0;
+
+
+                            teamPoints +=
+                                bigFishPoints;
+                        }
+
+                    });
+                }
+
+
+rowsHtml += `
+    <td style="text-align:center; white-space:nowrap;">
+        ${teamPoints}
+    </td>
+`;
+            });
+
+
+            rowsHtml += `
+                </tr>
+            `;
+        }
+
+
+        /*
+         * Joukkuekisan oma taulukko.
+         */
+teamResults.innerHTML = `
+    <h2>Joukkueiden tulokset</h2>
+
+    <div style="width:30%; margin:0;">
+
+        <table style="width:100%; table-layout:auto;">
+            <thead>
+                ${headerHtml}
+            </thead>
+
+            <tbody>
+                ${rowsHtml}
+            </tbody>
+        </table>
+
+    </div>
+`;
+
+
+        teamResults.style.display = "block";
+
+        return;
+    }
+
+
+    /*
+     * PARI- JA 3/4 HENGEN JOUKKUEET
+     *
+     * TÄTÄ OSAA EI MUUTETA.
+     */
+    if(
+        gameMode !== "pairs" &&
+        gameMode !== "team3" &&
+        gameMode !== "team4"
+    ){
+        teamResults.style.display = "none";
+        return;
+    }
+
+
+    const ranking =
+        calculateTeamRanking();
+
+
+    if(ranking.length === 0){
+        teamResults.style.display = "none";
+        return;
+    }
+
+
+    teamResultsBody.innerHTML = "";
+
+
+    ranking.forEach((team, index) => {
+
+        const row =
+            document.createElement("tr");
+
+
+        const players =
+            team.players.join("<br>");
+
+
+        const placements = [];
+
+
+        for(const playerName of team.players){
+
+            const player =
+                window.latestPlayers[playerName];
+
+
+            if(!player){
+                continue;
+            }
+
+
+            const playerPlacements =
+                player.placements
+                    .filter(p => !p.disq)
+                    .map(p => p.place);
+
+
+            placements.push(
+                playerPlacements.join(", ")
+            );
+        }
+
+
+        const placementText =
+            placements.join("<br>");
+
+
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${players}</td>
+            <td>${placementText}</td>
+            <td>${team.points}</td>
+        `;
+
+
+        teamResultsBody.appendChild(row);
+    });
+
+
+teamResults.style.display = "block";
+}
 function getPoints(place){
 
     const system =
@@ -355,6 +1691,14 @@ function getPoints(place){
 
     if(system === "14"){
         return [14,12,10,9,8,7,6,5,4,3,2,1][place-1] || 0;
+    }
+
+    if(system === "custom"){
+
+        const customPoints =
+            document.getElementById("custom" + place);
+
+        return Number(customPoints.value) || 0;
     }
 
     return 0;
@@ -415,9 +1759,10 @@ function laske(){
     const text =
         document.getElementById("input").value;
 
-    const players = {};
-    const allResults = [];
-    const biggestFish = [];
+const players = {};
+const allResults = [];
+const biggestFish = [];
+const competitionNames = {};
 
     const lines = text.split('\n');
 
@@ -435,12 +1780,15 @@ function laske(){
             competitionName = startMatch[1].trim();
         }
 
-        if(line.includes("Competition finished. Results")){
-            readingResults = true;
-            competitionId++;
-            continue;
-        }
+if(line.includes("Competition finished. Results")){
+    readingResults = true;
+    competitionId++;
 
+    competitionNames[competitionId] =
+        competitionName;
+
+    continue;
+}
         if(
             /(?:Isoin kala|Suurin kala|Biggest fish)/i.test(line)
         ){
@@ -580,12 +1928,13 @@ players[playerName].placements.forEach(p=>{
 
             total += points;
 
-            if(
-                p.bigFish &&
-                document.getElementById("bigFishEnabled").checked
-            ){
-                total += 1;
-            }
+if(p.bigFish){
+
+    const bigFishPoints =
+        Number(document.getElementById("bigFishPoints").value) || 0;
+
+    total += bigFishPoints;
+}
         });
 
         players[playerName].points = total;
@@ -664,15 +2013,41 @@ players[playerName].placements.forEach(p=>{
     html += `
     </table>
 
+<div id="teamResults" style="display:none;">
+
+    <h2>Joukkueiden tulokset</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Sija</th>
+                <th>Joukkue</th>
+                <th>Sijoitukset</th>
+                <th>Pisteet</th>
+            </tr>
+        </thead>
+
+        <tbody id="teamResultsBody">
+        </tbody>
+    </table>
+
+</div>
     <div class="note">
         <strong>Suurin kala merkattu boldattuna.</strong>
     </div>
     `;
 
-    document.getElementById("tulos").innerHTML = html;
-    window.latestRanking = ranking;
+document.getElementById("tulos").innerHTML = html;
+
+window.latestRanking = ranking;
+window.latestPlayers = players;
+window.latestCompetitionNames = competitionNames;
+window.latestAllResults = allResults;
+
+displayTeamRanking();
     window.biggestFish = biggestFish;
-    document.getElementById("copyBBCodeBtn").disabled = false;
+document.getElementById("copyBBCodeBtn").disabled = false;
+document.getElementById("copyImageBtn").disabled = false;
 }
 
 
@@ -680,16 +2055,190 @@ function copyBBCode(){
 
     if(!window.latestRanking) return;
 
+    const gameMode =
+        document.getElementById("gameMode").value;
+
     function pad(text, width){
         text = String(text);
-        return text + " ".repeat(Math.max(0, width - text.length));
+        return text + " ".repeat(
+            Math.max(0, width - text.length)
+        );
     }
 
-function monospaceBlock(text){
-    return "[font=Cascadia Mono SemiBold]" +
-        text.replace(/ /g, "\u00A0") +
-        "[/font]";
-}
+    function monospaceBlock(text){
+        return "[font=Cascadia Mono SemiBold]" +
+            text.replace(/ /g, "\u00A0") +
+            "[/font]";
+    }
+
+
+    // PARI- JA JOUKKUEKISAT
+    if(
+        gameMode === "pairs" ||
+        gameMode === "team3" ||
+        gameMode === "team4"
+    ){
+
+        const teamRanking =
+            calculateTeamRanking();
+
+        if(!teamRanking.length){
+            alert("Joukkueita ei löytynyt.");
+            return;
+        }
+
+        const rows =
+            teamRanking.map((team,index)=>{
+
+                const players =
+                    team.players.join(" / ");
+
+                const placements =
+                    team.players.map(playerName=>{
+
+                        const player =
+                            window.latestPlayers[playerName];
+
+                        if(!player){
+                            return "-";
+                        }
+
+                        return player.placements
+                            .filter(p=>!p.disq)
+                            .map(p=>p.place)
+                            .join(",");
+
+                    }).join(" / ");
+
+                return {
+                    sija: (index+1)+".",
+                    pelaajat: players,
+                    sijoitukset: placements,
+                    pisteet: String(team.points)
+                };
+            });
+
+
+        const wSija =
+            Math.max(
+                4,
+                ...rows.map(r=>r.sija.length)
+            );
+
+        const wPelaajat =
+            Math.max(
+                8,
+                ...rows.map(r=>r.pelaajat.length)
+            );
+
+        const wSijoitukset =
+            Math.max(
+                11,
+                ...rows.map(r=>r.sijoitukset.length)
+            );
+
+        const wPisteet =
+            Math.max(
+                7,
+                ...rows.map(r=>r.pisteet.length)
+            );
+
+
+        let resultsText = "";
+
+        resultsText +=
+            pad("Sija",wSija) +
+            "  " +
+            pad("Pelaajat",wPelaajat) +
+            "  " +
+            pad("Sijoitukset",wSijoitukset) +
+            "  " +
+            pad("Pisteet",wPisteet) +
+            "\n";
+
+        resultsText +=
+            "-".repeat(
+                wSija +
+                wPelaajat +
+                wSijoitukset +
+                wPisteet +
+                6
+            ) +
+            "\n";
+
+
+        rows.forEach(r=>{
+
+            resultsText +=
+                pad(r.sija,wSija) +
+                "  " +
+                pad(r.pelaajat,wPelaajat) +
+                "  " +
+                pad(r.sijoitukset,wSijoitukset) +
+                "  " +
+                pad(r.pisteet,wPisteet) +
+                "\n";
+
+        });
+
+
+        let bb =
+            "[size=3][b]Tulokset[/b][/size]\n\n" +
+            monospaceBlock(
+                resultsText.trimEnd()
+            );
+
+
+        // SUURIMMAT KALAT
+        if(window.biggestFish.length){
+
+            let fishText = "";
+
+            fishText +=
+                pad("Vesistö",18) +
+                "  " +
+                pad("Pelaaja",20) +
+                "  " +
+                pad("Laji",12) +
+                "  " +
+                "Paino\n";
+
+            fishText +=
+                "-".repeat(62) +
+                "\n";
+
+            window.biggestFish.forEach(f=>{
+
+                fishText +=
+                    pad(f.lake,18) +
+                    "  " +
+                    pad(f.player,20) +
+                    "  " +
+                    pad(f.species,12) +
+                    "  " +
+                    f.weight +
+                    " g\n";
+
+            });
+
+            bb +=
+                "\n\n[size=3][b]Suurimmat kalat[/b][/size]\n\n" +
+                monospaceBlock(
+                    fishText.trimEnd()
+                );
+        }
+
+
+        navigator.clipboard.writeText(bb);
+
+        alert("BBCode kopioitu leikepöydälle.");
+
+        return;
+    }
+
+
+    // YKSILÖKISA
+    // Tämä osa on tarkoituksella sama kuin nykyisessä versiossa.
 
     const rows = window.latestRanking.map((row,index)=>{
 
@@ -707,72 +2256,194 @@ function monospaceBlock(text){
 
     });
 
-    const wSija = Math.max(4,...rows.map(r=>r.sija.length));
-    const wPelaaja = Math.max(7,...rows.map(r=>r.pelaaja.length));
-    const wJoukkue = Math.max(7,...rows.map(r=>r.joukkue.length));
-    const wSijoitukset = Math.max(11,...rows.map(r=>r.sijoitukset.length));
-    const wPisteet = Math.max(7,...rows.map(r=>r.pisteet.length));
+
+    const wSija =
+        Math.max(4,...rows.map(r=>r.sija.length));
+
+    const wPelaaja =
+        Math.max(7,...rows.map(r=>r.pelaaja.length));
+
+    const wJoukkue =
+        Math.max(7,...rows.map(r=>r.joukkue.length));
+
+    const wSijoitukset =
+        Math.max(
+            11,
+            ...rows.map(r=>r.sijoitukset.length)
+        );
+
+    const wPisteet =
+        Math.max(7,...rows.map(r=>r.pisteet.length));
+
 
     let resultsText = "";
 
     resultsText +=
-        pad("Sija",wSija)+"  "+
-        pad("Pelaaja",wPelaaja)+"  "+
-        pad("Joukkue",wJoukkue)+"  "+
-        pad("Sijoitukset",wSijoitukset)+"  "+
-        pad("Pisteet",wPisteet)+"\n";
+        pad("Sija",wSija) +
+        "  " +
+        pad("Pelaaja",wPelaaja) +
+        "  " +
+        pad("Joukkue",wJoukkue) +
+        "  " +
+        pad("Sijoitukset",wSijoitukset) +
+        "  " +
+        pad("Pisteet",wPisteet) +
+        "\n";
 
     resultsText += "-".repeat(
-        wSija+wPelaaja+wJoukkue+wSijoitukset+wPisteet+10
-    )+"\n";
+        wSija +
+        wPelaaja +
+        wJoukkue +
+        wSijoitukset +
+        wPisteet +
+        10
+    ) + "\n";
+
 
     rows.forEach(r=>{
 
         resultsText +=
-            pad(r.sija,wSija)+"  "+
-            pad(r.pelaaja,wPelaaja)+"  "+
-            pad(r.joukkue,wJoukkue)+"  "+
-            pad(r.sijoitukset,wSijoitukset)+"  "+
-            pad(r.pisteet,wPisteet)+"\n";
+            pad(r.sija,wSija) +
+            "  " +
+            pad(r.pelaaja,wPelaaja) +
+            "  " +
+            pad(r.joukkue,wJoukkue) +
+            "  " +
+            pad(r.sijoitukset,wSijoitukset) +
+            "  " +
+            pad(r.pisteet,wPisteet) +
+            "\n";
 
     });
 
-let bb =
-    "[size=3][b]Tulokset[/b][/size]\n\n" +
-    monospaceBlock(resultsText.trimEnd());
+
+    let bb =
+        "[size=3][b]Tulokset[/b][/size]\n\n" +
+        monospaceBlock(
+            resultsText.trimEnd()
+        );
+
 
     if(window.biggestFish.length){
 
         let fishText = "";
 
         fishText +=
-            pad("Vesistö",18)+"  "+
-            pad("Pelaaja",20)+"  "+
-            pad("Laji",12)+"  "+
+            pad("Vesistö",18) +
+            "  " +
+            pad("Pelaaja",20) +
+            "  " +
+            pad("Laji",12) +
+            "  " +
             "Paino\n";
 
-        fishText += "-".repeat(62)+"\n";
+        fishText += "-".repeat(62) + "\n";
 
         window.biggestFish.forEach(f=>{
 
             fishText +=
-                pad(f.lake,18)+"  "+
-                pad(f.player,20)+"  "+
-                pad(f.species,12)+"  "+
-                f.weight+" g\n";
+                pad(f.lake,18) +
+                "  " +
+                pad(f.player,20) +
+                "  " +
+                pad(f.species,12) +
+                "  " +
+                f.weight +
+                " g\n";
+
         });
 
-bb +=
-    "\n\n[size=3][b]Suurimmat kalat[/b][/size]\n\n" +
-    monospaceBlock(fishText.trimEnd());
+        bb +=
+            "\n\n[size=3][b]Suurimmat kalat[/b][/size]\n\n" +
+            monospaceBlock(
+                fishText.trimEnd()
+            );
     }
+
 
     navigator.clipboard.writeText(bb);
 
     alert("BBCode kopioitu leikepöydälle.");
 }
+async function copyResultsImage(){
+
+    let target;
+
+    const gameMode =
+        document.getElementById("gameMode").value;
+
+if(
+    gameMode === "pairs" ||
+    gameMode === "team3" ||
+    gameMode === "team4" ||
+    gameMode === "team"
+){
+    target = document.getElementById("teamResults");
+}else{
+    target = document.getElementById("tulos");
+}
+
+    if(!target){
+        alert("Tuloksia ei löytynyt.");
+        return;
+    }
+
+    try{
+
+        const canvas = await html2canvas(target, {
+            backgroundColor: null,
+            scale: 2
+        });
+
+        canvas.toBlob(async function(blob){
+
+            if(!blob){
+                alert("Kuvan luominen epäonnistui.");
+                return;
+            }
+
+            try{
+
+                await navigator.clipboard.write([
+                    new ClipboardItem({
+                        "image/png": blob
+                    })
+                ]);
+
+                const button =
+                    document.getElementById("copyImageBtn");
+
+                const oldText = button.textContent;
+
+                button.textContent = "Kopioitu!";
+
+                setTimeout(() => {
+                    button.textContent = oldText;
+                }, 1500);
+
+            }catch(error){
+
+                console.error(error);
+
+                alert(
+                    "Kuvan kopiointi leikepöydälle epäonnistui."
+                );
+            }
+
+        }, "image/png");
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "Tulosten kuvaksi muuttaminen epäonnistui."
+        );
+    }
+}
 
 </script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
