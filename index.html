@@ -1790,7 +1790,7 @@ if(line.includes("Competition finished. Results")){
     continue;
 }
         if(
-            /(?:Isoin kala|Suurin kala|Biggest fish)/i.test(line)
+            /^(?:Isoin kala|Suurin kala|Biggest fish)\b/i.test(line)
         ){
             readingResults = false;
             waitingBigFish = true;
